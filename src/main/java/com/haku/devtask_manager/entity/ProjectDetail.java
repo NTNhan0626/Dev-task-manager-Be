@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -15,7 +17,7 @@ public class ProjectDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long projectDetailId;
-
+    private Date joinDate;
     private String status;
 
     @ManyToOne

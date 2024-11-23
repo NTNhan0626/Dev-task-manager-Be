@@ -19,4 +19,6 @@ public interface AccountService {
     UserAuthResponse getToken(String username, String password) throws JOSEException, ParseException;
     List<AccountResponse> findAllByDepartmentDetailListIsNull ();
 
+
+
 }

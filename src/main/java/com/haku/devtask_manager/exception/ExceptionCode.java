@@ -17,11 +17,14 @@ public enum ExceptionCode {
     DEPARTMENT_EXISTS("1006","department already exists"),
     DEPARTMENT_NOTEXISTS("1007","department already not exists"),
 
-    CATEGORY_NOTEXISTS("108","category alreadt not exists"),
-    CATEGORY_EXISTS("109","category alreadt exists"),
+    DEPARTMENT_DETAIL_EXISTS("1008","department detail already exists"),
+    DEPARTMENT_DETAIL_NOTEXISTS("1009","department detail already not exists"),
 
-    INFORMATION_NOTEXISTS("110","information alreadt not exists"),
-    INFORMATION_EXISTS("111","information alreadt exists");
+    CATEGORY_NOTEXISTS("1010","category alreadt not exists"),
+    CATEGORY_EXISTS("1011","category alreadt exists"),
+
+    INFORMATION_NOTEXISTS("1012","information alreadt not exists"),
+    INFORMATION_EXISTS("1013","information alreadt exists");
 
 
     private final String code;

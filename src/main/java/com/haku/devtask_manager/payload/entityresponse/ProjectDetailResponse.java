@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 
 @Data
 @AllArgsConstructor
@@ -16,6 +18,6 @@ import lombok.NoArgsConstructor;
 public class ProjectDetailResponse {
 
     private String status;
-
-    private String accountName;
+    private Date joinDate;
+    private String userName;
 }

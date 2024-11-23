@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface ProjectDepartmentDetailRepo extends JpaRepository<ProjectDepartmentDetail,Long> {
     List<ProjectDepartmentDetail> findAllByDepartment_DepartmentId(Long departmentd);
+    List<ProjectDepartmentDetail> findAllByProject_ProjectId(Long projectId);
+    boolean existsByProject_ProjectId(Long projectId);
 }

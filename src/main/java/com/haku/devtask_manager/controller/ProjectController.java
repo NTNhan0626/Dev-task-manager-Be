@@ -25,6 +25,14 @@ public class ProjectController {
         ApiResponse<List<ProjectResponse>> apiResponse = new ApiResponse<>(100,"get all project bdp success",projectResponses);
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }
+    @GetMapping("/get/{projectId}")
+    public ResponseEntity<ApiResponse<ProjectResponse>>getOneByProjectId (
+            @PathVariable Long projectId
+    ){
+        ProjectResponse projectResponse = projectService.getOneByProjectId(projectId);
+        ApiResponse<ProjectResponse> apiResponse = new ApiResponse<>(100,"get project success",projectResponse);
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+    }
 
     @PostMapping("/create/{departmentId}")
     public ResponseEntity<ApiResponse<ProjectResponse>> createDepartmentProject(

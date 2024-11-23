@@ -2,6 +2,7 @@ package com.haku.devtask_manager.service.serviceImpl;
 
 import com.haku.devtask_manager.entity.*;
 import com.haku.devtask_manager.exception.CustomRuntimeException;
+import com.haku.devtask_manager.exception.CustomRuntimeExceptionv2;
 import com.haku.devtask_manager.exception.ExceptionCode;
 import com.haku.devtask_manager.mapper.AccountMapper;
 import com.haku.devtask_manager.payload.entityrequest.DepartmentDetailRequest;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -128,5 +130,32 @@ public class DepartmentDetailServiceImpl implements DepartmentDetailService {
                             .build();
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<AccountResponse> getDepartmentDetailsByDepartmentIdandNullTimeOut(Long departmentId) {
+        List<DepartmentDetail> departmentDetails = departmentDetailRepo.findAllByDepartment_DepartmentIdAndTimeOutIsNull(departmentId);
+        if(departmentDetails.isEmpty()) throw new CustomRuntimeException(ExceptionCode.DEPARTMENT_DETAIL_NOTEXISTS.getCode(),ExceptionCode.DEPARTMENT_DETAIL_EXISTS.getMessage());
+
+        List<Account> accounts = departmentDetails.stream()
+                .map(DepartmentDetail::getAccount)
+                .toList();
+
+        return accounts.stream().
+                map(account -> AccountResponse.builder()
+                        .username(account.getUsername())
+                        .specializations(account.getSpecializationDetails().stream().map(
+                                specializationDetail -> specializationDetail.getSpecialization().getSpecializationName()
+                        ).collect(Collectors.joining(",")))
+                        .statusProject(
+                                Optional.ofNullable(account.getProjectDetails()).filter(projectDetails -> projectDetails.stream()
+                                        .anyMatch(projectDetail -> "inproject".equals(projectDetail.getStatus()))).map(projectDetails -> "Đang trong dự án: " + projectDetails.stream()
+                                        .filter(projectDetail -> "inproject".equals(projectDetail.getStatus()))
+                                        .map(projectDetail -> projectDetail.getProject().getProjectName())
+                                        .collect(Collectors.joining(","))).orElse("Rảnh")  // Nếu getProjectDetails() là null thì trả về "Rảnh"
+                        )
+                        .build())
+                .collect(Collectors.toList());
+
     }
 }

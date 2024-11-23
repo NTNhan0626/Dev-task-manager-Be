@@ -1,6 +1,7 @@
 package com.haku.devtask_manager.controller;
 
 import com.haku.devtask_manager.payload.ApiResponse;
+import com.haku.devtask_manager.payload.entityresponse.AccountResponse;
 import com.haku.devtask_manager.payload.entityresponse.DepartmentDetailResponse;
 import com.haku.devtask_manager.service.DepartmentDetailService;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,15 @@ public class DepartmentDetailController {
             @PathVariable Long departmentId){
         List<DepartmentDetailResponse> departmentDetailResponses = departmentDetailService.getAllDepartmentDetail(departmentId);
         ApiResponse<List<DepartmentDetailResponse>> apiResponse = new ApiResponse<>(100,"get departmentdetails Success",departmentDetailResponses);
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+    }
+
+    @GetMapping("/getac/{departmentId}")
+    public ResponseEntity<ApiResponse<List<AccountResponse>>> getDepartmentDetailsByDepartmentIdandNullTimeOut(
+            @PathVariable Long departmentId
+    ){
+        List<AccountResponse> accountResponseList = departmentDetailService.getDepartmentDetailsByDepartmentIdandNullTimeOut(departmentId);
+        ApiResponse<List<AccountResponse>> apiResponse = new ApiResponse<>(100,"get account in department success",accountResponseList);
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }
     @PostMapping("add/{departmentId}")

@@ -2,15 +2,18 @@ package com.haku.devtask_manager.service.serviceImpl;
 
 import com.haku.devtask_manager.entity.Project;
 import com.haku.devtask_manager.entity.ProjectDepartmentDetail;
+import com.haku.devtask_manager.entity.ProjectDetail;
 import com.haku.devtask_manager.exception.CustomRuntimeException;
 import com.haku.devtask_manager.exception.CustomRuntimeExceptionv2;
 import com.haku.devtask_manager.exception.ExceptionCode;
 import com.haku.devtask_manager.exception.ExceptionCodev2;
 import com.haku.devtask_manager.mapper.ProjectMapper;
 import com.haku.devtask_manager.payload.entityrequest.ProjectRequest;
+import com.haku.devtask_manager.payload.entityresponse.ProjectDetailResponse;
 import com.haku.devtask_manager.payload.entityresponse.ProjectResponse;
 import com.haku.devtask_manager.repository.DepartmentRepo;
 import com.haku.devtask_manager.repository.ProjectDepartmentDetailRepo;
+import com.haku.devtask_manager.repository.ProjectDetailRepo;
 import com.haku.devtask_manager.repository.ProjectRepo;
 import com.haku.devtask_manager.service.ProjectService;
 import lombok.RequiredArgsConstructor;
@@ -18,12 +21,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ProjectServiceImpl implements ProjectService {
     private final ProjectRepo projectRepo;
     private final ProjectDepartmentDetailRepo projectDepartmentDetailRepo;
+    private final ProjectDetailRepo projectDetailRepo;
     private final DepartmentRepo departmentRepo;
     private final ProjectMapper projectMapper;
     @Transactional
@@ -65,6 +70,22 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectResponse getOneByProjectId(Long projectId) {
-        return null;
+        Project project = projectRepo.findById(projectId)
+                .orElseThrow(() -> new CustomRuntimeExceptionv2(ExceptionCodev2.PROJECT_NOT_FOUND));
+        ProjectResponse projectResponse = projectMapper.toProjectResponse(project);
+
+        boolean checked = projectDetailRepo.existsByProject_ProjectId(projectId);
+        if(checked){
+            List<ProjectDetail> projectDetails = projectDetailRepo.findAllByProject_ProjectId(projectId);
+            projectResponse.setProjectDetailResponses(projectDetails.stream()
+                    .map(projectDetail -> ProjectDetailResponse.builder()
+                            .joinDate(projectDetail.getJoinDate())
+                            .userName(projectDetail.getAccount().getUsername())
+                            .status(projectDetail.getStatus())
+                            .build() )
+                    .collect(Collectors.toList()));
+        }
+
+        return projectResponse;
     }
 }

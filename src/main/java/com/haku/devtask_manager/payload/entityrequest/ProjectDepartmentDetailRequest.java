@@ -1,26 +1,19 @@
-package com.haku.devtask_manager.entity;
+package com.haku.devtask_manager.payload.entityrequest;
 
+import com.haku.devtask_manager.entity.Department;
+import com.haku.devtask_manager.entity.Project;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class ProjectDepartmentDetail {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long projectDepartmentDetailId;
+@Builder
+public class ProjectDepartmentDetailRequest {
+
     private String status;
-
-    @ManyToOne
-    @JoinColumn(name = "projectId")
-    private Project project;
-
-    @ManyToOne
-    @JoinColumn(name = "departmentd")
-    private Department department;
 
 }

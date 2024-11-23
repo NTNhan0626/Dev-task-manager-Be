@@ -12,4 +12,5 @@ public interface DepartmentDetailRepo extends JpaRepository<DepartmentDetail,Lon
     List<DepartmentDetail> findAllByDepartment_DepartmentId(Long departmentId);
     DepartmentDetail findOneByAccountAndTimeOutIsNull(Account account);
     boolean existsByAccountAndTimeOutIsNull(Account account);
+    List<DepartmentDetail> findAllByDepartment_DepartmentIdAndTimeOutIsNull(Long departmentId); // dùng để tìm nhân viên trong ohongf ban
 }

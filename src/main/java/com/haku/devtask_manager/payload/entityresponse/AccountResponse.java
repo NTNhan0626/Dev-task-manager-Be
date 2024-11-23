@@ -27,9 +27,9 @@ public class AccountResponse {
     private Date dateCreate;
     private InformationResponse informationResponse;
 
-    private String position;
-//    private List<RolesDetail> rolesDetailList;
-//    private List<DepartmentDetail> departmentDetailList;
+    private String position; // vai trò trong phòng
+    private String specializations; // các chuyên môn cá nhân
+    private String statusProject; // trạng thái có dang làm dự án nào nay không
 //    private List<Degree> degreeList;
 
 
