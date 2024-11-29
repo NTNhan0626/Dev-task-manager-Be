@@ -26,6 +26,13 @@ public enum ExceptionCodev2 {
     PROJECTDEPARTMENTDETAIL_EXISTS(122, "project department detail already exists", HttpStatus.CONFLICT),
     PROJECTDEPARTMENTDETAIL_NOT_FOUND(123, "project department detail not found",HttpStatus.NOT_FOUND),
 
+    TASK_EXISTS(124, "task already exists", HttpStatus.CONFLICT),
+    TASK_NOT_FOUND(125, "task not found",HttpStatus.NOT_FOUND),
+
+    LOGWORK_EXISTS(126, "logwork already exists", HttpStatus.CONFLICT),
+    LOGWORK_NOT_FOUND(127, "logwork not found",HttpStatus.NOT_FOUND),
+
+
     ;
 
     private int code;

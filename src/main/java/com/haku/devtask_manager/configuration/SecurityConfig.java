@@ -46,9 +46,9 @@ public class SecurityConfig {
 
                         //phân quyền project
                         .requestMatchers(HttpMethod.POST,
-                                "/project/**").hasRole("MN")
+                                "/project/**").hasAnyRole("MN","leadmanager")
                         .requestMatchers(HttpMethod.GET,
-                                "/project/**").hasRole("MN")
+                                "/project/**").hasAnyRole("MN", "ST","leadmanager")
                         .requestMatchers(HttpMethod.PUT,
                                 "/project/**").hasRole("MN")
                         .requestMatchers(HttpMethod.DELETE,

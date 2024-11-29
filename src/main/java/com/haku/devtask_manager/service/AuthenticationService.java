@@ -87,6 +87,7 @@ public class AuthenticationService  {
                 }
 
                 if(rolesDetail.isStaff()){
+                    stringJoiner.add("ST");
                     if(rolesDetail.isReader()){
                         setRolse=roles+"STR";
                         stringJoiner.add(setRolse);

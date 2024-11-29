@@ -22,10 +22,13 @@ public class Task {
     private String taskName;
     private String description;
     private String status;
+    private String taskCondition; // It will have 3 values: active, paused, canceled
     private String progress;
+    private Date createDate;
     private Date startDate;
     private Date endDate ;
     private Date actualEndDate ;
+    private Long managerTaskId; // người quản lí task này có quyền tạo task con cho nó
 
     @ManyToOne
     @JoinColumn(name = "parentTaskId")
@@ -38,8 +41,11 @@ public class Task {
     @JoinColumn(name = "projectId")
     private Project project;
 
+    @OneToMany(mappedBy = "task",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private List<TaskDetail> taskDetails; // quản lí nhân viên trong công việc
 
+    @OneToMany(mappedBy = "task",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private List<LogWork> logWorks;
 
-
-
+    
 }

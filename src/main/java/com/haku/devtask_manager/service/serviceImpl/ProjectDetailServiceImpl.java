@@ -29,7 +29,7 @@ public class ProjectDetailServiceImpl implements ProjectDetailService {
             ProjectDetail projectDetail = new ProjectDetail();
             projectDetail.setAccount(accountRepo.findById(id).orElseThrow());
             projectDetail.setProject(projectRepo.findById(projectId).orElseThrow());
-            projectDetail.setStatus("in project");
+            projectDetail.setStatus("inproject");
             projectDetail.setJoinDate(new Date());
             projectDetailRepo.save(projectDetail);
         } );

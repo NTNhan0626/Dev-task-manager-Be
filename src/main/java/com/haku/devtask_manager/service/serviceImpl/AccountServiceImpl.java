@@ -149,8 +149,6 @@ public class AccountServiceImpl implements AccountService {
             departmentName = "";
         }
 
-
-
         boolean authenticated = passwordEncoder.matches(password,account.getPassword());
         if(!authenticated){
             throw new CustomRuntimeException(ExceptionCode.INVALID_REQUEST.getCode(),ExceptionCode.INVALID_REQUEST.getMessage());

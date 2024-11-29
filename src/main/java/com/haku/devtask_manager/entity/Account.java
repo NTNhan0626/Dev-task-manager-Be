@@ -42,6 +42,7 @@ public class Account {
 
     @OneToMany(mappedBy = "account",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<ProjectDetail> projectDetails;
-
+    @OneToMany(mappedBy = "account",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private List<TaskDetail> taskDetails;
 
 }

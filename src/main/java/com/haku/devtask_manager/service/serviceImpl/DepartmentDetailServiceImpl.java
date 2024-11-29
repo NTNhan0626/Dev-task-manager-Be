@@ -144,6 +144,7 @@ public class DepartmentDetailServiceImpl implements DepartmentDetailService {
         return accounts.stream().
                 map(account -> AccountResponse.builder()
                         .username(account.getUsername())
+                        .accountId(account.getAccountId())
                         .specializations(account.getSpecializationDetails().stream().map(
                                 specializationDetail -> specializationDetail.getSpecialization().getSpecializationName()
                         ).collect(Collectors.joining(",")))

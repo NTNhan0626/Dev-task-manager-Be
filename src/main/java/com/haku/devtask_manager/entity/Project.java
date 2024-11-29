@@ -27,13 +27,20 @@ public class Project {
     private Date endDate;
     private Date actualEndDate;
     private String status;
+
     private double progress;
     private Long projectManagerId;
+    private String projectCondition; // It will have 3 values: active, paused, canceled
+
+
 
     @OneToMany(mappedBy = "project",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<ProjectDetail> projectDetails;
 
     @OneToMany(mappedBy = "project",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<ProjectDepartmentDetail> projectDepartmentDetails;
+
+    @OneToMany(mappedBy = "project",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private List<Task> taskList;
 
 }

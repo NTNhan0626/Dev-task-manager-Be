@@ -9,5 +9,7 @@ import java.util.List;
 public interface ProjectDetailRepo extends JpaRepository<ProjectDetail,Long> {
     boolean existsByProject_ProjectId(Long projectId);
     List<ProjectDetail> findAllByProject_ProjectId(Long projectId);
+    List<ProjectDetail> findAllByAccount_accountId(Long accountId);
+
 
 }
