@@ -29,12 +29,12 @@ public class TaskResponse {
     private Date actualEndDate ;
     private Long managerTaskId; // người quản lí task này có quyền tạo task con cho nó
 
-
+    private Long projectManagerId; // id của người quản lí dự án sử dụng đối với dự án liên phòng ban
     private Long parentTaskId;
     private String parentTaskName;
     private String parentTaskStatus; // trạng thái của công việc cha
     private Long parentManagerTaskId; // id của người quản lí task cha
-
+    private Long projectCreaterId; // id của người tạo dự án để phân biệt giưuax các tài khoanr có quyền leadmanager
     private List<TaskResponse> taskResponseList; // các task con
 
 

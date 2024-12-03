@@ -28,6 +28,7 @@ public class ProjectResponse {
     private String projectCondition; // It will have 3 values: active, paused, canceled
     private double progress;
     private Long projectManagerId;
+    private Long createrId;
 
     List<ProjectDetailResponse> projectDetailResponses; // danh sách nhân viên trong dự án
     List<ProjectDepartmentDetailResponse> projectDepartmentDetailResponses; // danh sách các phòng ban trong dự án

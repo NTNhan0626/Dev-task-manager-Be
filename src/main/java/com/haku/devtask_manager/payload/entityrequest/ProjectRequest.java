@@ -25,6 +25,7 @@ public class ProjectRequest {
     private String projectCondition; // It will have 3 values: active, paused, canceled
     private double progress;
     private Long projectManagerId;
+    private Long createrId;
 
     private List<Long> departmentIds;
 }

@@ -11,14 +11,14 @@ import com.haku.devtask_manager.payload.entityrequest.ProjectRequest;
 import com.haku.devtask_manager.payload.entityrequest.TaskRequest;
 import com.haku.devtask_manager.payload.entityresponse.*;
 import com.haku.devtask_manager.repository.*;
+import com.haku.devtask_manager.service.DepartmentDetailService;
 import com.haku.devtask_manager.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import javax.management.relation.Role;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,13 +29,17 @@ public class ProjectServiceImpl implements ProjectService {
     private final ProjectDetailRepo projectDetailRepo;
     private final DepartmentRepo departmentRepo;
     private final AccountRepo accountRepo;
-
+    private final RolesRepo rolesRepo;
+    private final RolesDetailRepo rolesDetailRepo;
     private final TaskRepo taskRepo;
 
     private final ProjectMapper projectMapper;
     private final AccountMapper accountMapper;
+
+    private final DepartmentDetailService departmentDetailService;
     @Transactional
     @Override
+    // áp dụng cho dự án của phòng ban
     public ProjectResponse createDepartmentProject(ProjectRequest projectRequest, Long departmentId) {
         //khi tạo 1 dự án mới từ 1 phòng nào đó thì đồng thời phải tạo chi tiết dự án phòng ban tương ứng
         Project project = projectMapper.toProject(projectRequest);
@@ -56,6 +60,7 @@ public class ProjectServiceImpl implements ProjectService {
         task.setManagerTaskId(project.getProjectManagerId());
         task.setProject(project);
         task.setEndDate(project.getEndDate());
+        task.setTaskCondition(project.getProjectCondition());
         taskRepo.save(task);
 
         return projectMapper.toProjectResponse(project);
@@ -77,7 +82,22 @@ public class ProjectServiceImpl implements ProjectService {
                 .toList();
         List<Project> projects = projectRepo.findAllById(projectIds);
         if (projects.isEmpty()) throw new CustomRuntimeExceptionv2(ExceptionCodev2.PROJECT_NOT_FOUND);
-        return projectMapper.toProjectResponseList(projects);
+
+        return projects.stream()
+                .map(project -> {
+                    ProjectResponse projectResponse = projectMapper.toProjectResponse(project);
+                    projectResponse.setProjectDetailResponses(project.getProjectDetails().stream()
+                            .map(projectDetail -> ProjectDetailResponse.builder()
+                                    .projectDetailId(projectDetail.getProjectDetailId())
+                                    .userName(projectDetail.getAccount().getUsername())
+                                    .joinDate(projectDetail.getJoinDate())
+                                    .accountId(projectDetail.getAccount().getAccountId())
+                                    .status(projectDetail.getStatus())
+                                    .build())
+                            .collect(Collectors.toList()));
+                    return projectResponse;
+                })
+                .toList();
     }
 
     @Override
@@ -94,6 +114,7 @@ public class ProjectServiceImpl implements ProjectService {
                             .joinDate(projectDetail.getJoinDate())
                             .userName(projectDetail.getAccount().getUsername())
                             .status(projectDetail.getStatus())
+                            .accountId(projectDetail.getAccount().getAccountId())
                             .build() )
                     .collect(Collectors.toList()));
         }
@@ -116,6 +137,8 @@ public class ProjectServiceImpl implements ProjectService {
         taskResponse.setManagerTaskId(task.getManagerTaskId());
         taskResponse.setProjectId(task.getProject().getProjectId());
         taskResponse.setProjectName(task.getProject().getProjectName());
+        taskResponse.setProjectCreaterId(task.getProject().getCreaterId());
+        taskResponse.setProjectManagerId(task.getProject().getProjectManagerId());
         if(task.getParentTask()!= null) { // kiẻmr tra xem task cha có tồn tại hay không
             taskResponse.setParentManagerTaskId(task.getParentTask().getManagerTaskId());
 
@@ -166,20 +189,26 @@ public class ProjectServiceImpl implements ProjectService {
         List<Account> accounts = accountRepo.findAllById(accountIds);
 
         return accounts.stream().
-                map(account -> AccountResponse.builder()
-                        .username(account.getUsername())
-                        .accountId(account.getAccountId())
-                        .specializations(account.getSpecializationDetails().stream().map(
-                                specializationDetail -> specializationDetail.getSpecialization().getSpecializationName()
-                        ).collect(Collectors.joining(",")))
-                        .statusProject(
-                                Optional.ofNullable(account.getProjectDetails()).filter(projectDetails -> projectDetails.stream()
-                                        .anyMatch(projectDetail -> "inproject".equals(projectDetail.getStatus()))).map(projectDetails -> "Đang trong dự án: " + projectDetails.stream()
-                                        .filter(projectDetail -> "inproject".equals(projectDetail.getStatus()))
-                                        .map(projectDetail -> projectDetail.getProject().getProjectName())
-                                        .collect(Collectors.joining(","))).orElse("Rảnh")  // Nếu getProjectDetails() là null thì trả về "Rảnh"
-                        )
-                        .build())
+                map(account -> {
+
+                    ProjectDetail projectD = projectDetailRepo.findOneByAccount_AccountIdAndProject_ProjectId(account.getAccountId(),projectId);
+
+                    return AccountResponse.builder()
+                            .username(account.getUsername())
+                            .accountId(account.getAccountId())
+                            .statusInProject(projectD.getStatus())
+                            .specializations(account.getSpecializationDetails().stream().map(
+                                    specializationDetail -> specializationDetail.getSpecialization().getSpecializationName()
+                            ).collect(Collectors.joining(",")))
+                            .statusProject(
+                                    Optional.ofNullable(account.getProjectDetails()).filter(projectDetails -> projectDetails.stream()
+                                            .anyMatch(projectDetail -> "inproject".equals(projectDetail.getStatus()))).map(projectDetails -> "Đang trong dự án: " + projectDetails.stream()
+                                            .filter(projectDetail -> "inproject".equals(projectDetail.getStatus()))
+                                            .map(projectDetail -> projectDetail.getProject().getProjectName())
+                                            .collect(Collectors.joining(","))).orElse("Rảnh")  // Nếu getProjectDetails() là null thì trả về "Rảnh"
+                            )
+                            .build();
+                })
                 .collect(Collectors.toList());
     }
 
@@ -255,6 +284,44 @@ public class ProjectServiceImpl implements ProjectService {
             projectDepartmentDetailRepo.save(projectDepartmentDetail);
         } );
 
+        // tạo công việc đầu tiền có tên trùng với dự án
+        Task task = new Task();
+        task.setTaskName(project.getProjectName());
+        task.setCreateDate(project.getCreatedDate());
+        task.setManagerTaskId(project.getProjectManagerId());
+        task.setProject(project);
+        task.setEndDate(project.getEndDate());
+        task.setTaskCondition(project.getProjectCondition());
+        taskRepo.save(task);
+        //đồng thời thêm người được chọn làm quản lí dự án vào dự án
+        Account account = accountRepo.findById(projectRequest.getProjectManagerId()).orElseThrow();
+        ProjectDetail projectDetail = new ProjectDetail();
+        projectDetail.setAccount(account);
+        projectDetail.setProject(project);
+        projectDetail.setJoinDate(new Date());
+        projectDetail.setStatus("inproject");
+        projectDetailRepo.save(projectDetail);
+
+        // và tạo 1 quyền cho dự án để cấp cho người quản lí có thể là bất cứ ai
+
+        if(rolesRepo.existsByRolesName("PROJECT_MANAGER")){
+            Roles roles = rolesRepo.findOneByRolesName("PROJECT_MANAGER");
+            RolesDetail rolesDetail = new RolesDetail();
+            rolesDetail.setAccount(account);
+            rolesDetail.setRoles(roles);
+            rolesDetailRepo.save(rolesDetail);
+        }else{
+            Roles roles = new Roles();
+            roles.setRolesName("PROJECT_MANAGER");
+            rolesRepo.save(roles);
+
+            RolesDetail rolesDetail = new RolesDetail();
+            rolesDetail.setAccount(account);
+            rolesDetail.setRoles(roles);
+            rolesDetailRepo.save(rolesDetail);
+        }
+
+
         return projectMapper.toProjectResponse(project);
     }
 
@@ -278,6 +345,21 @@ public class ProjectServiceImpl implements ProjectService {
                     return projectResponse;
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<AccountResponse> getAllAccountsNotInProject(Long projectId, Long departmentId) {
+        List<AccountResponse> accountResponseList = departmentDetailService.getDepartmentDetailsByDepartmentIdandNullTimeOut(departmentId);
+        if (accountResponseList.isEmpty()) throw new CustomRuntimeException(ExceptionCode.USER_NOT_FOUND.getCode(),ExceptionCode.USER_NOT_FOUND.getMessage());
+
+        Set<Long> accountIdsinProject = projectDetailRepo.findAllByProject_ProjectId(projectId).stream()
+                .map(projectDetail -> projectDetail.getAccount().getAccountId())
+                .collect(Collectors.toSet());
+
+        return accountResponseList.stream()
+                .filter(accountResponse -> !accountIdsinProject.contains(accountResponse.getAccountId()))
+                .collect(Collectors.toList());
+
     }
 
 }

@@ -46,13 +46,13 @@ public class SecurityConfig {
 
                         //phân quyền project
                         .requestMatchers(HttpMethod.POST,
-                                "/project/**").hasAnyRole("MN","leadmanager")
+                                "/project/**").hasAnyRole("MN","leadmanager","PROJECT_MANAGER")
                         .requestMatchers(HttpMethod.GET,
                                 "/project/**").hasAnyRole("MN", "ST","leadmanager")
                         .requestMatchers(HttpMethod.PUT,
-                                "/project/**").hasRole("MN")
+                                "/project/**").hasAnyRole("MN","leadmanager","PROJECT_MANAGER")
                         .requestMatchers(HttpMethod.DELETE,
-                                "/project/**").hasRole("MN")
+                                "/project/**").hasAnyRole("MN","leadmanager","PROJECT_MANAGER")
 //                        .requestMatchers(HttpMethod.GET,"/category/**").hasRole("category")
 //                        .requestMatchers(HttpMethod.POST,"/category/**").hasRole("category")
                         .anyRequest().authenticated());

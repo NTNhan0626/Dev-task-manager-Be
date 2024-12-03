@@ -11,5 +11,8 @@ public interface ProjectDetailRepo extends JpaRepository<ProjectDetail,Long> {
     List<ProjectDetail> findAllByProject_ProjectId(Long projectId);
     List<ProjectDetail> findAllByAccount_accountId(Long accountId);
 
+    List<ProjectDetail> findAllByProject_ProjectIdAndStatus(Long projectId,String status);
+    ProjectDetail findOneByAccount_AccountIdAndProject_ProjectId(Long accountId,Long projectId);
+
 
 }

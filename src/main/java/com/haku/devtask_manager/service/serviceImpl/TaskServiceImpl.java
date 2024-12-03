@@ -3,6 +3,7 @@ package com.haku.devtask_manager.service.serviceImpl;
 import com.haku.devtask_manager.entity.Account;
 import com.haku.devtask_manager.entity.Project;
 import com.haku.devtask_manager.entity.Task;
+import com.haku.devtask_manager.entity.TaskDetail;
 import com.haku.devtask_manager.exception.CustomRuntimeExceptionv2;
 import com.haku.devtask_manager.exception.ExceptionCodev2;
 import com.haku.devtask_manager.mapper.TaskMapper;
@@ -17,6 +18,7 @@ import com.haku.devtask_manager.service.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,6 +47,7 @@ public class TaskServiceImpl implements TaskService {
         taskResponse.setManagerTaskId(task.getManagerTaskId());
         taskResponse.setProjectId(task.getProject().getProjectId());
         taskResponse.setProjectName(task.getProject().getProjectName());
+        taskResponse.setProjectCreaterId(task.getProject().getCreaterId());
         if(task.getParentTask()!= null) { // kiẻmr tra xem task cha có tồn tại hay không
             taskResponse.setParentManagerTaskId(task.getParentTask().getManagerTaskId());
 
@@ -95,9 +98,18 @@ public class TaskServiceImpl implements TaskService {
             task.setParentTask(taskparent);
         }
 
-
         task.setProject(project);
         taskRepo.save(task);
+        // nếu tạo task mà có idmanager tức là đang có 1 người trong task tạo task con thì phải thêm ng đó vào task con
+        //đây là trường hợp người dùng tạo node lá
+        if(task.getManagerTaskId() != null){
+            TaskDetail taskDetail = new TaskDetail();
+            taskDetail.setTask(task);
+            taskDetail.setAccount(accountRepo.findById(task.getManagerTaskId()).orElseThrow());
+            taskDetail.setStatus("inTask");
+            taskDetail.setJoinDate(new Date());
+            taskDetailRepo.save(taskDetail);
+        }
         return taskMapper.toTaskResponse(task);
     }
 

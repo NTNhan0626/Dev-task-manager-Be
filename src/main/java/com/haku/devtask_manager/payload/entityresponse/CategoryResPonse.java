@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,15 +15,10 @@ import lombok.NoArgsConstructor;
 
 public class CategoryResPonse {
     private Long categoryId;
-    private String job;
-    private String title;
-    private String degree;
-    private String certificate;
-    private String skill;
-    private String tools;
-    private String province;
-    private String city;
-    private String projectType;
+    private String categoryName;
+    private String accountName;
+    private Long accountId;
+    List<CategoryDetailResponse> categoryDetailResponses;
 
 
 }

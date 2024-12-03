@@ -73,6 +73,18 @@ public class ProjectController {
         ApiResponse<List<ProjectResponse>> apiResponse = new ApiResponse<>(100,"get all inter department project success",projectResponses);
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }
+    // láy ds các nhân viên trong phòng ban nhưnng chưa có trong dự án
+    @GetMapping("/getaccount/{projectId}/{departmentId}")
+    public ResponseEntity<ApiResponse<List<AccountResponse>>> getAllAccountsNotInProject(
+            @PathVariable Long projectId,
+            @PathVariable Long departmentId
+    ){
+        List<AccountResponse> accountResponseList = projectService.getAllAccountsNotInProject(projectId,departmentId);
+        ApiResponse<List<AccountResponse>> apiResponse = new ApiResponse<>(100,"get account in department not in project success",accountResponseList);
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+
+    }
+
     @PostMapping("/create/{departmentId}")
     public ResponseEntity<ApiResponse<ProjectResponse>> createDepartmentProject(
             @RequestBody ProjectRequest projectRequest,

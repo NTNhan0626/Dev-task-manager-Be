@@ -17,7 +17,9 @@ import java.util.Date;
 @Builder
 public class ProjectDetailResponse {
 
+    private Long projectDetailId;
     private String status;
     private Date joinDate;
     private String userName;
+    private Long accountId;
 }

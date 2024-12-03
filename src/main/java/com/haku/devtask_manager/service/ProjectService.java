@@ -22,4 +22,6 @@ public interface ProjectService {
 
     ProjectResponse createInterDepartmetalProject (ProjectRequest projectRequest);
     List<ProjectResponse> getAllInterDepartmetalProject (boolean status); // status = false thì là dự án liên phòng ban
+
+    List<AccountResponse> getAllAccountsNotInProject (Long projectId, Long departmentId);
 }

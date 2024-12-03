@@ -32,6 +32,9 @@ public enum ExceptionCodev2 {
     LOGWORK_EXISTS(126, "logwork already exists", HttpStatus.CONFLICT),
     LOGWORK_NOT_FOUND(127, "logwork not found",HttpStatus.NOT_FOUND),
 
+    TOOL_EXISTS(128, "tool already exists", HttpStatus.CONFLICT),
+    TOOL_NOT_FOUND(129, "tool not found",HttpStatus.NOT_FOUND),
+
 
     ;
 

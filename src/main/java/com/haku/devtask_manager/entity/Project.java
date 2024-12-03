@@ -21,7 +21,7 @@ public class Project {
 
     private String projectName;
     private String description;
-    private boolean projectType;
+    private boolean projectType; // true là dự án phòng ban false là liên phòng ban
     private Date createdDate;
     private Date startDate;
     private Date endDate;
@@ -29,7 +29,8 @@ public class Project {
     private String status;
 
     private double progress;
-    private Long projectManagerId;
+    private Long projectManagerId; // id người người ohuj trách dự án đối với dự án phòng ban thì ng phụ trách là quản lí phòng ban còn liên phòng ban thì được chỉ định
+    private Long createrId;// dùng cho dự án liên phòng ban để phân biệt giữa các lead manager
     private String projectCondition; // It will have 3 values: active, paused, canceled
 
 
@@ -42,5 +43,7 @@ public class Project {
 
     @OneToMany(mappedBy = "project",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<Task> taskList;
+    @OneToMany(mappedBy = "project",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private List<ToolProjectDetail> toolProjectDetails;
 
 }
