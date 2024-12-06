@@ -143,6 +143,7 @@ public class ProjectServiceImpl implements ProjectService {
             taskResponse.setParentManagerTaskId(task.getParentTask().getManagerTaskId());
 
             taskResponse.setParentTaskStatus(task.getParentTask().getStatus());
+            taskResponse.setParentTaskEmployeeSize(task.getParentTask().getTaskDetails().size());
         }
         if(task.getManagerTaskId() != null){
             Account account = accountRepo.findById(task.getManagerTaskId()).orElseThrow();

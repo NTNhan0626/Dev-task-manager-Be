@@ -47,5 +47,11 @@ public class Task {
     @OneToMany(mappedBy = "task",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<LogWork> logWorks;
 
+    @OneToMany(mappedBy = "task",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private List<Issues> issues;
+
+    @OneToMany(mappedBy = "task",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private List<TaskEvaluation> taskEvaluations;
+
     
 }

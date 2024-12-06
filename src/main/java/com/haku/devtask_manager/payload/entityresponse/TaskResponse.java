@@ -34,6 +34,7 @@ public class TaskResponse {
     private String parentTaskName;
     private String parentTaskStatus; // trạng thái của công việc cha
     private Long parentManagerTaskId; // id của người quản lí task cha
+    private int parentTaskEmployeeSize;// số lượng nhân viên trong task cha
     private Long projectCreaterId; // id của người tạo dự án để phân biệt giưuax các tài khoanr có quyền leadmanager
     private List<TaskResponse> taskResponseList; // các task con
 

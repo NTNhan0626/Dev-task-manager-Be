@@ -45,4 +45,10 @@ public class Account {
     @OneToMany(mappedBy = "account",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<TaskDetail> taskDetails;
 
+    @OneToMany(mappedBy = "accountrp", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private List<Issues> issues;
+
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private List<TaskEvaluation> taskEvaluations;
+
 }

@@ -28,6 +28,8 @@ public class Tool {
 
     @OneToMany(mappedBy = "tool",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<ToolProjectDetail> projectToolDetails ;
+    @OneToMany(mappedBy = "tool",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<ToolIssuesDetail> toolIssuesDetailList ;
 
 
 }

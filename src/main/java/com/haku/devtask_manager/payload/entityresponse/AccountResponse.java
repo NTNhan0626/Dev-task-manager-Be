@@ -30,7 +30,8 @@ public class AccountResponse {
     private String position; // vai trò trong phòng
     private String specializations; // các chuyên môn cá nhân
     private String statusProject; // trạng thái có dang làm dự án nào nay không
-//    private List<Degree> degreeList;
+    private List<DegreeDetailResponse> detailResponses;
+    private List<SpecializationDetailResponse> specializationDetailResponses;
     private String statusInProject; // trạng thái của tài khoản trong 1 dự án
 
 

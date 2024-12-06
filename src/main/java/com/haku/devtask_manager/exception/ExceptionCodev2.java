@@ -35,6 +35,15 @@ public enum ExceptionCodev2 {
     TOOL_EXISTS(128, "tool already exists", HttpStatus.CONFLICT),
     TOOL_NOT_FOUND(129, "tool not found",HttpStatus.NOT_FOUND),
 
+    ISSUES_EXISTS(130, "issues already exists", HttpStatus.CONFLICT),
+    ISSUES_NOT_FOUND(131, "issues not found",HttpStatus.NOT_FOUND),
+
+    ISSUES_DETAIL_EXISTS(132, "issues detail already exists", HttpStatus.CONFLICT),
+    ISSUES_DETAIL_NOT_FOUND(133, "issues detail not found",HttpStatus.NOT_FOUND),
+
+    TASKEVALUATION_EXISTS(134, "task evaluation already exists", HttpStatus.CONFLICT),
+    TASKEVALUATION_NOT_FOUND(135, "task evaluation not found",HttpStatus.NOT_FOUND),
+
 
     ;
 

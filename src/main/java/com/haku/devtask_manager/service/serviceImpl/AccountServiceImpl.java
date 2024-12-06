@@ -1,23 +1,20 @@
 package com.haku.devtask_manager.service.serviceImpl;
 
 
-import com.haku.devtask_manager.entity.Account;
-import com.haku.devtask_manager.entity.DepartmentDetail;
-import com.haku.devtask_manager.entity.Roles;
-import com.haku.devtask_manager.entity.RolesDetail;
+import com.haku.devtask_manager.entity.*;
 import com.haku.devtask_manager.exception.CustomRuntimeException;
 import com.haku.devtask_manager.exception.ExceptionCode;
 import com.haku.devtask_manager.mapper.AccountMapper;
 import com.haku.devtask_manager.payload.entityrequest.AccountRequest;
-import com.haku.devtask_manager.payload.entityresponse.AccountResponse;
-import com.haku.devtask_manager.payload.entityresponse.InformationResponse;
-import com.haku.devtask_manager.payload.entityresponse.UserAuthResponse;
+import com.haku.devtask_manager.payload.entityresponse.*;
 import com.haku.devtask_manager.repository.AccountRepo;
 import com.haku.devtask_manager.repository.DepartmentDetailRepo;
 import com.haku.devtask_manager.repository.RolesDetailRepo;
 import com.haku.devtask_manager.repository.RolesRepo;
 import com.haku.devtask_manager.service.AccountService;
 import com.haku.devtask_manager.service.AuthenticationService;
+import com.haku.devtask_manager.service.DegreeDetailService;
+import com.haku.devtask_manager.service.SpecializationDetailService;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSVerifier;
 import com.nimbusds.jose.crypto.MACVerifier;
@@ -40,6 +37,8 @@ public class AccountServiceImpl implements AccountService {
     private final AccountMapper accountMapper;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationService authenticationService;
+    private final DegreeDetailService degreeDetailService;
+    private final SpecializationDetailService specializationDetailService;
     private final DepartmentDetailRepo departmentDetailRepo;
     private final RolesDetailRepo rolesDetailRepo;
     private final RolesRepo rolesRepo;
@@ -60,6 +59,14 @@ public class AccountServiceImpl implements AccountService {
                         .address(account.getInformation().getAddress())
 
                         .build());
+            }
+            if (!account.getDegreeDetails().isEmpty()){
+                List<DegreeDetailResponse> degreeDetailResponses = degreeDetailService.getDegreeDetailByAccountId(account.getAccountId());
+                accountResponse.setDetailResponses(degreeDetailResponses);
+            }
+            if (!account.getSpecializationDetails().isEmpty()){
+                List<SpecializationDetailResponse> specializationDetailResponses = specializationDetailService.getSpecializationDetailByAccountId(account.getAccountId());
+                accountResponse.setSpecializationDetailResponses(specializationDetailResponses);
             }
 
         } );
