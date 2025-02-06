@@ -44,6 +44,9 @@ public enum ExceptionCodev2 {
     TASKEVALUATION_EXISTS(134, "task evaluation already exists", HttpStatus.CONFLICT),
     TASKEVALUATION_NOT_FOUND(135, "task evaluation not found",HttpStatus.NOT_FOUND),
 
+    CATEGORYDETAIL_EXISTS(136, "category detail already exists", HttpStatus.CONFLICT),
+    CATEGORYDETAIL_NOT_FOUND(137, "category detail not found",HttpStatus.NOT_FOUND),
+
 
     ;
 

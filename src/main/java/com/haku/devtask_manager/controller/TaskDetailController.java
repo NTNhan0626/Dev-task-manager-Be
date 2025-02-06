@@ -36,4 +36,14 @@ public class TaskDetailController {
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }
 
+    @DeleteMapping("/delete/{taskdetailId}")
+    public ResponseEntity<ApiResponse<List<TaskDetailResponse>>> delete(
+            @PathVariable Long taskdetailId
+
+    ){
+        taskDetailService.deleteTaskDetail(taskdetailId);
+        ApiResponse<List<TaskDetailResponse>> apiResponse = new ApiResponse<>(100,"create list task response success",null);
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+    }
+
 }

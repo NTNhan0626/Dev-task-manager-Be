@@ -76,4 +76,9 @@ public class InformationServiceImpl implements InformationService {
                 .Gender(information.isGender())
                 .build();
     }
+
+    @Override
+    public InformationResponse createInformation(InformationRequest informationRequest, Long accountId) {
+        return null;
+    }
 }

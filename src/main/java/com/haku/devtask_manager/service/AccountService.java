@@ -15,10 +15,11 @@ public interface AccountService {
     AccountResponse getAccountById(Long accountId);
     AccountResponse addAccount(AccountRequest accountRequest);
     AccountResponse updateAccount(AccountRequest accountRequest,Long accountId);
-    void deleteAccount(Long accountId);
+
     UserAuthResponse getToken(String username, String password) throws JOSEException, ParseException;
     List<AccountResponse> findAllByDepartmentDetailListIsNull ();
-
+    AccountResponse deleteAccount (Long accountId);
+    boolean changePassword(String token,String newPassword,String oldPassword) throws ParseException;
 
 
 }

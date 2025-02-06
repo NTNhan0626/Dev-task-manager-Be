@@ -12,5 +12,5 @@ public interface DegreeDetailService {
     List<DegreeDetailResponse> getDegreeDetailByAccountId (Long accountId);
     List<DegreeDetailResponse> getDegreeDetailByDegreeId (Long degreeId);
     DegreeDetailResponse updateDegree(DegreeDetailRequest degreeRequest,Long degreeDetailId);
-    DegreeDetailResponse deleteDegree(Long degreeId,Long accountId);
+    DegreeDetailResponse deleteDegreeDetail(Long degreeDetailId);
 }

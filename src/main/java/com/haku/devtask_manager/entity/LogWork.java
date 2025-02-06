@@ -22,7 +22,7 @@ public class LogWork {
     private String description; // mô tả chi tiết xem kàm cái gì
     private Date createDate;
     private String time;
-    private String status; // trạng thái logwork xem có được duyệt hay không
+    private String status; // sửa status thành nhận xét để nhận xét chất lượng công viẹc của nhân viên
 
     @ManyToOne
     @JoinColumn(name = "taskId")

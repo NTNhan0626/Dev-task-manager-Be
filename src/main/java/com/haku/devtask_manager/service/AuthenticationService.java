@@ -86,7 +86,7 @@ public class AuthenticationService  {
                     }
                 }
 
-                if(rolesDetail.isStaff()){
+                else if(rolesDetail.isStaff()){
                     stringJoiner.add("ST");
                     if(rolesDetail.isReader()){
                         setRolse=roles+"STR";
@@ -110,7 +110,7 @@ public class AuthenticationService  {
                     }
                 }
 
-                if(rolesDetail.isGuest()){
+                else if(rolesDetail.isGuest()){
                     if(rolesDetail.isReader()){
                         setRolse=roles+"GUR";
                         stringJoiner.add(setRolse);
@@ -128,6 +128,28 @@ public class AuthenticationService  {
                     }
                     if(rolesDetail.isCreater()){
                         setRolse=roles+"GUC";
+                        stringJoiner.add(setRolse);
+                        setRolse = "";
+                    }
+                }
+                else {
+                    if(rolesDetail.isReader()){
+                        setRolse=roles+"R";
+                        stringJoiner.add(setRolse);
+                        setRolse = "";
+                    }
+                    if(rolesDetail.isWriter()){
+                        setRolse=roles+"U";
+                        stringJoiner.add(setRolse);
+                        setRolse = "";
+                    }
+                    if(rolesDetail.isDeleter()){
+                        setRolse=roles+"D";
+                        stringJoiner.add(setRolse);
+                        setRolse = "";
+                    }
+                    if(rolesDetail.isCreater()){
+                        setRolse=roles+"C";
                         stringJoiner.add(setRolse);
                         setRolse = "";
                     }

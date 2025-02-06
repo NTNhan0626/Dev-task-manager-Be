@@ -55,4 +55,13 @@ public class ProjectDetailController {
         ApiResponse<List<ProjectDetailResponse>> apiResponse = new ApiResponse<>(100,"approve account success",projectDetailResponseList);
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }
+    @DeleteMapping("/delete/{projectId}/{accountId}")
+    public ResponseEntity<ApiResponse<ProjectDetailResponse>> deletedProjectDetail (
+            @PathVariable Long projectId,
+            @PathVariable Long accountId
+    ){
+        ProjectDetailResponse projectDetailResponseList = projectDetailService.deletedProjectDetail(projectId,accountId);
+        ApiResponse<ProjectDetailResponse> apiResponse = new ApiResponse<>(100,"delete project detail success",projectDetailResponseList);
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+    }
 }

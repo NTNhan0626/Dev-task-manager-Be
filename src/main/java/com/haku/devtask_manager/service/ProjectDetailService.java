@@ -11,4 +11,5 @@ public interface ProjectDetailService {
     List<ProjectDetailResponse> createByProjectIdAndAccountIdsAndStatus(Long projectId,List<Long> accountIds,String status);
     List<ProjectDetailResponse> getAllAccountRequest(Long projectId,String status );
     List<ProjectDetailResponse> updateProjectDetail (List<ProjectDetailRequest> projectDetailRequests);
+    ProjectDetailResponse deletedProjectDetail(Long projectId,Long accountId);
 }

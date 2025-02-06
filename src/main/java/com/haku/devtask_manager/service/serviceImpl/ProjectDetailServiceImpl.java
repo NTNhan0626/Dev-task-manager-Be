@@ -1,7 +1,6 @@
 package com.haku.devtask_manager.service.serviceImpl;
 
-import com.haku.devtask_manager.entity.Account;
-import com.haku.devtask_manager.entity.ProjectDetail;
+import com.haku.devtask_manager.entity.*;
 import com.haku.devtask_manager.exception.CustomRuntimeExceptionv2;
 import com.haku.devtask_manager.exception.ExceptionCodev2;
 import com.haku.devtask_manager.payload.entityrequest.ProjectDetailRequest;
@@ -9,21 +8,28 @@ import com.haku.devtask_manager.payload.entityresponse.ProjectDetailResponse;
 import com.haku.devtask_manager.repository.AccountRepo;
 import com.haku.devtask_manager.repository.ProjectDetailRepo;
 import com.haku.devtask_manager.repository.ProjectRepo;
+import com.haku.devtask_manager.repository.TaskDetailRepo;
 import com.haku.devtask_manager.service.ProjectDetailService;
+import com.haku.devtask_manager.service.TaskDetailService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProjectDetailServiceImpl implements ProjectDetailService {
     private final ProjectDetailRepo projectDetailRepo;
     private final AccountRepo accountRepo;
     private final ProjectRepo projectRepo;
+    private final TaskDetailRepo taskDetailRepo;
+    private final TaskDetailService taskDetailService;
 
     @Transactional
     @Override
@@ -108,5 +114,34 @@ public class ProjectDetailServiceImpl implements ProjectDetailService {
                         .status(projectDetailRequest.getStatus())
                         .build())
                 .collect(Collectors.toList());
+    }
+
+
+    @Transactional
+    @Override
+    public ProjectDetailResponse deletedProjectDetail(Long projectId, Long accountId) {
+        ProjectDetail projectDetail = projectDetailRepo.findOneByAccount_AccountIdAndProject_ProjectId(accountId,projectId);
+        projectDetailRepo.delete(projectDetail);
+        Project project = projectRepo.findById(projectId)
+                .orElseThrow();
+        List<Task> taskList = project.getTaskList();
+        taskList.forEach(task -> {
+            if (task.getTaskDetails() != null ) {
+                task.getTaskDetails().forEach(taskDetail -> {
+
+                    if (Objects.equals(taskDetail.getAccount().getAccountId(), accountId)) {
+                        taskDetail.setStatus("outTask");
+                        taskDetailRepo.save(taskDetail);
+//                        taskDetailService.deleteTaskDetail(taskDetail.getTaskDetailId());
+
+                    }
+                });
+            }
+        });
+        return ProjectDetailResponse.builder()
+                .projectDetailId(projectDetail.getProjectDetailId())
+                .joinDate(projectDetail.getJoinDate())
+                .status(projectDetail.getStatus())
+                .build();
     }
 }

@@ -11,6 +11,6 @@ public interface SpecializationDetailService {
     SpecializationDetailResponse updateSpecializationDetail(Long id, SpecializationDetailRequest request);
     List<SpecializationDetailResponse> getSpecializationDetailByAccountId (Long accountId);
     List<SpecializationDetailResponse> getSpecializationDetailBySpecializationId (Long specializationId);
-    void deleteSpecializationDetail(Long id);
+    SpecializationDetailResponse  deleteSpecializationDetail(Long id);
     List<SpecializationDetailResponse> getAllSpecializationDetails();
 }

@@ -8,4 +8,5 @@ public interface TaskService {
     TaskResponse createTask (TaskRequest taskRequest, Long projectId,Long taskParentId);
     TaskResponse updateTask (TaskRequest taskRequest,Long taskId);
     TaskResponse updateTaskProgress (Long taskId, String progress);
+    void deleteTask (Long taskId);
 }

@@ -23,7 +23,7 @@ public class Department {
     private String status;
     private Date createdDate;
 
-    @OneToMany(mappedBy = "department")
+    @OneToMany(mappedBy = "department",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<DepartmentDetail> departmentDetailList;
     @OneToMany(mappedBy = "department",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<ProjectDepartmentDetail> projectDepartmentDetails;

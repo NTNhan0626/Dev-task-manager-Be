@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 
 @Data
@@ -22,4 +23,5 @@ public class ProjectDetailResponse {
     private Date joinDate;
     private String userName;
     private Long accountId;
+    List<TaskResponse> taskResponses;
 }

@@ -23,6 +23,7 @@ public class AccountRequest {
     private String email;
     private String status;
     private Date dateCreate;
+
     private Information information;
     private List<RolesDetail> rolesDetailList;
     private List<DepartmentDetail> departmentDetailList;

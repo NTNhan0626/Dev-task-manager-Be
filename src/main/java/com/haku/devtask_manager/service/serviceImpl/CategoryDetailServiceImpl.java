@@ -3,7 +3,9 @@ package com.haku.devtask_manager.service.serviceImpl;
 import com.haku.devtask_manager.entity.Category;
 import com.haku.devtask_manager.entity.CategoryDetail;
 import com.haku.devtask_manager.exception.CustomRuntimeException;
+import com.haku.devtask_manager.exception.CustomRuntimeExceptionv2;
 import com.haku.devtask_manager.exception.ExceptionCode;
+import com.haku.devtask_manager.exception.ExceptionCodev2;
 import com.haku.devtask_manager.payload.entityrequest.CategoryDetailRequest;
 import com.haku.devtask_manager.payload.entityresponse.CategoryDetailResponse;
 import com.haku.devtask_manager.repository.CategoryDetailRepo;
@@ -29,6 +31,29 @@ public class CategoryDetailServiceImpl implements CategoryDetailService {
                 .categoryDetailId(categoryDetail.getCategoryDetailId())
                 .categoryName(category.getCategoryName())
                 .categoryId(categoryId)
+                .build();
+    }
+
+    @Override
+    public CategoryDetailResponse updateCategoryDetail(CategoryDetailRequest categoryDetailRequest, Long categoryDetailId) {
+        CategoryDetail categoryDetail = categoryDetailRepo.findById( categoryDetailId)
+                .orElseThrow(() -> new CustomRuntimeExceptionv2(ExceptionCodev2.CATEGORYDETAIL_NOT_FOUND));
+        categoryDetail.setCategoryDetailName(categoryDetailRequest.getCategoryDetailName());
+        categoryDetailRepo.save(categoryDetail);
+        return CategoryDetailResponse.builder()
+                .categoryDetailId(categoryDetail.getCategoryDetailId())
+                .categoryDetailName(categoryDetail.getCategoryDetailName())
+                .build();
+    }
+
+    @Override
+    public CategoryDetailResponse deleteCategoryDetail(Long categoryDetailId) {
+        CategoryDetail categoryDetail = categoryDetailRepo.findById( categoryDetailId)
+                .orElseThrow(() -> new CustomRuntimeExceptionv2(ExceptionCodev2.CATEGORYDETAIL_NOT_FOUND));
+        categoryDetailRepo.delete(categoryDetail);
+        return CategoryDetailResponse.builder()
+                .categoryDetailId(categoryDetail.getCategoryDetailId())
+                .categoryDetailName(categoryDetail.getCategoryDetailName())
                 .build();
     }
 }

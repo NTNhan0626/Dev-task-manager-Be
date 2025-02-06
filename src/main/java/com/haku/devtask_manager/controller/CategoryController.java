@@ -1,7 +1,9 @@
 package com.haku.devtask_manager.controller;
 
 import com.haku.devtask_manager.payload.ApiResponse;
+import com.haku.devtask_manager.payload.entityrequest.CategoryDetailRequest;
 import com.haku.devtask_manager.payload.entityrequest.CategoryRequest;
+import com.haku.devtask_manager.payload.entityresponse.CategoryDetailResponse;
 import com.haku.devtask_manager.payload.entityresponse.CategoryResPonse;
 import com.haku.devtask_manager.service.CategoryService;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +45,21 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }
 
+    @PutMapping("/update/{categoryId}")
+    public ResponseEntity<ApiResponse<CategoryResPonse>> updateCategory(
+            @RequestBody CategoryRequest categoryRequest,
+            @PathVariable Long categoryId ){
+        CategoryResPonse categoryDetailResponse = categoryService.updateCategory(categoryRequest,categoryId);
+        ApiResponse<CategoryResPonse> apiResponse = new ApiResponse<>(100,"update Category Success",categoryDetailResponse);
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+    }
 
+    @DeleteMapping("/delete/{categoryId}")
+    public ResponseEntity<ApiResponse<CategoryResPonse>> deleteCategory(
+            @PathVariable Long categoryId ){
+        CategoryResPonse categoryDetailResponse = categoryService.deleteCategory(categoryId);
+        ApiResponse<CategoryResPonse> apiResponse = new ApiResponse<>(100,"delete Category Success",categoryDetailResponse);
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+    }
 
 }

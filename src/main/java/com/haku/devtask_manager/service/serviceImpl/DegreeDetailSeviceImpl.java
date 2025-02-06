@@ -91,8 +91,9 @@ public class DegreeDetailSeviceImpl implements DegreeDetailService {
     }
 
     @Override
-    public DegreeDetailResponse deleteDegree(Long degreeId, Long accountId) {
-        DegreeDetail degreeDetail = degreeDetailRepo.findOneByAccount_AccountIdAndDegree_DegreeId(accountId,degreeId);
+    public DegreeDetailResponse deleteDegreeDetail(Long degreeDetailId) {
+        DegreeDetail degreeDetail = degreeDetailRepo.findById(degreeDetailId)
+                .orElseThrow(() -> new CustomRuntimeExceptionv2(ExceptionCodev2.DEGREEDETAIL_NOT_FOUND));
         degreeDetailRepo.delete(degreeDetail);
         return degreeDetailMapper.toDegreeDetailResponse(degreeDetail);
     }

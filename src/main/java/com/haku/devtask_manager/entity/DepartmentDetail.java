@@ -23,11 +23,11 @@ public class DepartmentDetail {
     private Date timeOut;
     private String status;
 
-    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @ManyToOne()
     @JoinColumn(name = "accountId")
     private Account account;
 
-    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @ManyToOne()
     @JoinColumn(name = "departmentId")
     private Department department;
 }

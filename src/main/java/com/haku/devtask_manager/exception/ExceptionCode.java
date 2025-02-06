@@ -8,6 +8,7 @@ import lombok.Getter;
 public enum ExceptionCode {
     USER_EXISTS("1000", "User already exists"),
     USER_NOT_FOUND("1001", "User not found"),
+    USER_HAS_BEEN_BLOCKED("1014", "User has been blocked"),
     INVALID_REQUEST("1002", "Invalid request"),
     INTERNAL_SERVER_ERROR("1003", "Internal server error"),
 

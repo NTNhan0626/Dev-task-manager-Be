@@ -124,7 +124,7 @@ public class TaskServiceImpl implements TaskService {
         if(taskRequest.getStartDate()!=null) task.setStartDate(taskRequest.getStartDate());
         if(taskRequest.getStatus()!=null) task.setStatus(taskRequest.getStatus());
         if(taskRequest.getActualEndDate()!=null) task.setActualEndDate(taskRequest.getActualEndDate());
-
+        if (taskRequest.getTaskCondition()!=null) task.setTaskCondition(taskRequest.getTaskCondition());
         taskRepo.save(task);
         return convertToDto(task);
     }
@@ -136,5 +136,10 @@ public class TaskServiceImpl implements TaskService {
         task.setProgress(progress);
         taskRepo.save(task);
         return convertToDto(task);
+    }
+
+    @Override
+    public void deleteTask(Long taskId) {
+        taskRepo.deleteById(taskId);
     }
 }

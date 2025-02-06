@@ -93,10 +93,11 @@ public class SpecializationDetailServiceImpl implements SpecializationDetailServ
     }
 
     @Override
-    public void deleteSpecializationDetail(Long id) {
+    public SpecializationDetailResponse deleteSpecializationDetail(Long id) {
         SpecializationDetail specializationDetail = specializationDetailRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Specialization Detail not found"));
         specializationDetailRepo.delete(specializationDetail);
+        return specializationDetailMapper.toSpecializationDetailResponse(specializationDetail);
     }
 
     @Override

@@ -22,10 +22,11 @@ public class Account {
     private String status;
     private Date dateCreate;
 
+
     @OneToOne(mappedBy = "account",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private Information information;
 
-    @OneToMany(mappedBy = "account")
+    @OneToMany(mappedBy = "account" ,cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<RolesDetail> rolesDetailList;
 
     @OneToMany(mappedBy = "account" ,cascade = CascadeType.ALL,fetch = FetchType.LAZY)

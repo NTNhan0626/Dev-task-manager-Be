@@ -112,5 +112,14 @@ public class ProjectController {
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }
 
+    @GetMapping("/getall") // lấy tất cả dứ án của phòng ban
+    public ResponseEntity<ApiResponse<List<ProjectResponse>>> getAll(
+
+    ){
+        List<ProjectResponse> projectResponses = projectService.getAllProject();
+        ApiResponse<List<ProjectResponse>> apiResponse = new ApiResponse<>(100,"get all project success",projectResponses);
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+    }
+
 
 }

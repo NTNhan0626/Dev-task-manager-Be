@@ -54,12 +54,12 @@ public class DegreeDetailController {
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
 
     }
-    @DeleteMapping("/delete/{accountId}/{degreeId}")
+    @DeleteMapping("/delete/{degreeDetailId}")
     public ResponseEntity<ApiResponse<DegreeDetailResponse>> deleteDegreeDetail(
-            @PathVariable Long degreeId,
-            @PathVariable Long accountId
+            @PathVariable Long degreeDetailId
+
     ){
-        DegreeDetailResponse degreeDetailResponse = degreeDetailService.deleteDegree(degreeId,accountId);
+        DegreeDetailResponse degreeDetailResponse = degreeDetailService.deleteDegreeDetail(degreeDetailId);
         ApiResponse<DegreeDetailResponse> apiResponse = new ApiResponse<>(100,"delete dgreedetail success",degreeDetailResponse);
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
 

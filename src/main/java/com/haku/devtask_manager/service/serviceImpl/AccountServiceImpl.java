@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import java.text.ParseException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -62,11 +63,11 @@ public class AccountServiceImpl implements AccountService {
             }
             if (!account.getDegreeDetails().isEmpty()){
                 List<DegreeDetailResponse> degreeDetailResponses = degreeDetailService.getDegreeDetailByAccountId(account.getAccountId());
-                accountResponse.setDetailResponses(degreeDetailResponses);
+                accountResponse.setDetailResponses(degreeDetailResponses.stream().filter(degreeDetailResponse -> degreeDetailResponse.getStatus().equals("Đã duyệt")).collect(Collectors.toList()));
             }
             if (!account.getSpecializationDetails().isEmpty()){
                 List<SpecializationDetailResponse> specializationDetailResponses = specializationDetailService.getSpecializationDetailByAccountId(account.getAccountId());
-                accountResponse.setSpecializationDetailResponses(specializationDetailResponses);
+                accountResponse.setSpecializationDetailResponses(specializationDetailResponses.stream().filter(specializationDetailResponse -> specializationDetailResponse.getStatus().equals("Đã duyệt")).collect(Collectors.toList()));
             }
 
         } );
@@ -103,20 +104,16 @@ public class AccountServiceImpl implements AccountService {
             throw new CustomRuntimeException(ExceptionCode.USER_NOT_FOUND.getCode(), ExceptionCode.USER_NOT_FOUND.getMessage());
         }
         Account account = accountOptional.get();
+        if (accountRequest.getEmail()!=null) account.setEmail(accountRequest.getEmail());
 
-        account.setUsername(accountRequest.getUsername());
-        account.setEmail(accountRequest.getEmail());
+        if (accountRequest.getStatus()!=null) account.setStatus(accountRequest.getStatus());
+
+
 
         accountRepo.save(account);
 
         return accountMapper.toAccountResponse(account);
     }
-
-    @Override
-    public void deleteAccount(Long accountId) {
-
-    }
-
     @Override
     public UserAuthResponse getToken(String username, String password) throws JOSEException, ParseException {
         AtomicReference<String> typeRoles = new AtomicReference<>("");
@@ -125,6 +122,9 @@ public class AccountServiceImpl implements AccountService {
         Account account = accountRepo.findOneByUsername(username);
         if(account == null){
             throw new CustomRuntimeException(ExceptionCode.USER_NOT_FOUND.getCode(),ExceptionCode.USER_NOT_FOUND.getMessage());
+        }
+        if (account.getStatus().equals("Paused")){
+            throw new CustomRuntimeException(ExceptionCode.USER_HAS_BEEN_BLOCKED.getCode(),ExceptionCode.USER_HAS_BEEN_BLOCKED.getMessage());
         }
 
         // tìm phòng ban hiện tại của nhana viên
@@ -191,4 +191,41 @@ public class AccountServiceImpl implements AccountService {
     public List<AccountResponse> findAllByDepartmentDetailListIsNull() {
         return accountMapper.toAccountResponseList(accountRepo.findAllByDepartmentDetailListIsNull());
     }
+
+    @Override
+    public AccountResponse deleteAccount(Long accountId) {
+        Account account = accountRepo.findById(accountId)
+                .orElseThrow(() -> new CustomRuntimeException(ExceptionCode.USER_NOT_FOUND.getCode(),ExceptionCode.USER_NOT_FOUND.getMessage()));
+        accountRepo.delete(account);
+
+        return accountMapper.toAccountResponse(account);
+    }
+
+    @Override
+    public boolean changePassword(String token, String newPassword, String oldPassword) throws ParseException {
+        // Giải mã token
+        SignedJWT signedJWT = SignedJWT.parse(token);
+        String userName = signedJWT.getJWTClaimsSet().getSubject();
+
+        // Tìm tài khoản người dùng
+        Account account = accountRepo.findOneByUsername(userName);
+        if (account == null) {
+            throw new CustomRuntimeException(ExceptionCode.USER_NOT_FOUND.getCode(), ExceptionCode.USER_NOT_FOUND.getMessage());
+        }
+
+        // Kiểm tra mật khẩu cũ có khớp không
+        boolean authenticated = passwordEncoder.matches(oldPassword, account.getPassword());
+        if (!authenticated) {
+            throw new CustomRuntimeException(ExceptionCode.INVALID_REQUEST.getCode(), ExceptionCode.INVALID_REQUEST.getMessage());
+        }
+
+        // Cập nhật mật khẩu mới
+        account.setPassword(passwordEncoder.encode(newPassword));
+        // Lưu tài khoản sau khi thay đổi mật khẩu
+        accountRepo.save(account);
+
+        // Trả về true nếu thành công
+        return true;
+    }
+
 }

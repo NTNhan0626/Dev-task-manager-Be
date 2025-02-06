@@ -31,7 +31,7 @@ public class Category {
 //    private String projectType;
 
 
-    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @ManyToOne()
     @JoinColumn(name = "accountId")
     private Account account;
 

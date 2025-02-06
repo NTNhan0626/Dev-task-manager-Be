@@ -34,24 +34,27 @@ public class Task {
     @JoinColumn(name = "parentTaskId")
     private Task parentTask;
 
-    @OneToMany(mappedBy = "parentTask",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    private List<Task> taskList;
+
 
     @ManyToOne
     @JoinColumn(name = "projectId")
     private Project project;
 
-    @OneToMany(mappedBy = "task",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    private List<TaskDetail> taskDetails; // quản lí nhân viên trong công việc
+    @OneToMany(mappedBy = "parentTask", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Task> taskList;
 
-    @OneToMany(mappedBy = "task",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<TaskDetail> taskDetails;
+
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<LogWork> logWorks;
 
-    @OneToMany(mappedBy = "task",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Issues> issues;
 
-    @OneToMany(mappedBy = "task",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<TaskEvaluation> taskEvaluations;
 
-    
+
+
 }

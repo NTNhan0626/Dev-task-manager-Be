@@ -78,5 +78,27 @@ public class AccountController {
         ApiResponse<List<AccountResponse>> apiResponse = new ApiResponse<>(100,"Get Account With Null Department Success",accountResponseList);
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }
+    @DeleteMapping("/delete/{accountId}")
+    public ResponseEntity<ApiResponse<AccountResponse>> deleteAccount(
+        @PathVariable Long accountId
+    ){
+        AccountResponse accountResponse = accountService.deleteAccount(accountId);
+        ApiResponse<AccountResponse> apiResponse = new ApiResponse<>(100,"delete account success",accountResponse);
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+    }
+
+    @PostMapping("/changepassword")
+    public ResponseEntity<ApiResponse<Boolean>> changePassword(
+            @RequestBody Map<String,String> payload,
+            @RequestHeader("Authorization") String authorizationHeader
+    ) throws ParseException {
+        String oldPassword = payload.get("oldPassword");
+        String newPassword = payload.get("newPassword");
+        // Lấy token từ header "Authorization"
+        String token = authorizationHeader.replace("Bearer ", "");
+        boolean b = accountService.changePassword(token,newPassword,oldPassword);
+        ApiResponse<Boolean> apiResponse = new ApiResponse<>(100,"delete account success",b);
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+    }
 
 }

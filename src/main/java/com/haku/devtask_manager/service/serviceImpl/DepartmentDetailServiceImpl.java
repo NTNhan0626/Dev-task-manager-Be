@@ -5,9 +5,11 @@ import com.haku.devtask_manager.exception.CustomRuntimeException;
 import com.haku.devtask_manager.exception.CustomRuntimeExceptionv2;
 import com.haku.devtask_manager.exception.ExceptionCode;
 import com.haku.devtask_manager.mapper.AccountMapper;
+import com.haku.devtask_manager.mapper.SpecializationDetailMapper;
 import com.haku.devtask_manager.payload.entityrequest.DepartmentDetailRequest;
 import com.haku.devtask_manager.payload.entityresponse.AccountResponse;
 import com.haku.devtask_manager.payload.entityresponse.DepartmentDetailResponse;
+import com.haku.devtask_manager.payload.entityresponse.SpecializationDetailResponse;
 import com.haku.devtask_manager.repository.*;
 import com.haku.devtask_manager.service.DepartmentDetailService;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ public class DepartmentDetailServiceImpl implements DepartmentDetailService {
     private final DepartmentDetailRepo departmentDetailRepo;
     private final AccountRepo accountRepo;
     private final AccountMapper accountMapper;
+    private final SpecializationDetailMapper specializationDetailMapper;
     private final DepartmentRepo departmentRepo;
     private final RolesDetailRepo rolesDetailRepo;
     private final RolesRepo rolesRepo;
@@ -53,6 +56,18 @@ public class DepartmentDetailServiceImpl implements DepartmentDetailService {
                         }
 
                     }
+                    if (!departmentDetail.getAccount().getSpecializationDetails().isEmpty()){
+                        List<SpecializationDetail> specializationDetails = departmentDetail.getAccount().getSpecializationDetails();
+                        List<SpecializationDetail> filerspecializationDetails = specializationDetails.stream().filter(specializationDetail -> specializationDetail.getStatus().equals("Đã duyệt")).toList();
+                        accountResponse.setSpecializationDetailResponses(filerspecializationDetails.stream()
+                                .map(specializationDetail -> {
+                                    SpecializationDetailResponse specializationDetailResponse = specializationDetailMapper.toSpecializationDetailResponse(specializationDetail);
+                                    specializationDetailResponse.setSpecializationName(specializationDetail.getSpecialization().getSpecializationName());
+                                    return specializationDetailResponse;
+                                })
+                                .collect(Collectors.toList()));
+                    }
+
                     accountResponse.setPosition(position);
                     return DepartmentDetailResponse.builder()
                             .id(departmentDetail.getId())

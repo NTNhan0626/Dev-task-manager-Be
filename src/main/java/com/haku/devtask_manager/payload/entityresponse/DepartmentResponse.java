@@ -1,6 +1,7 @@
 package com.haku.devtask_manager.payload.entityresponse;
 
 import com.haku.devtask_manager.entity.DepartmentDetail;
+import com.haku.devtask_manager.entity.ProjectDepartmentDetail;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,4 +21,6 @@ public class DepartmentResponse {
     private String status;
     private Date createdDate;
     private int numberStaff;
+    private boolean checkDeleted;
+
 }

@@ -38,12 +38,20 @@ public class CategoryImpl implements CategoryService {
 
     @Override
     public CategoryResPonse updateCategory(CategoryRequest categoryRequest, Long categoryId) {
-        return null;
+        Category category = categoryRepo.findById(categoryId)
+                .orElseThrow(() -> new CustomRuntimeException(ExceptionCode.CATEGORY_NOTEXISTS.getCode(),ExceptionCode.CATEGORY_NOTEXISTS.getCode()));
+        category.setCategoryName(categoryRequest.getCategoryName());
+        categoryRepo.save(category);
+        return categoryMapper.toCategoryResPonse(category);
     }
 
     @Override
     public CategoryResPonse deleteCategory(Long categoryId) {
-        return null;
+        Category category = categoryRepo.findById(categoryId)
+                .orElseThrow(() -> new CustomRuntimeException(ExceptionCode.CATEGORY_NOTEXISTS.getCode(),ExceptionCode.CATEGORY_NOTEXISTS.getCode()));
+
+        categoryRepo.delete(category);
+        return categoryMapper.toCategoryResPonse(category);
     }
 
     @Override
@@ -58,6 +66,7 @@ public class CategoryImpl implements CategoryService {
                         .categoryName(category.getCategoryName())
                         .categoryDetailResponses(category.getCategoryDetails().stream()
                                 .map(categoryDetail -> CategoryDetailResponse.builder()
+                                        .categoryDetailId(categoryDetail.getCategoryDetailId())
                                         .categoryDetailName(categoryDetail.getCategoryDetailName())
                                         .build())
                                 .collect(Collectors.toList()))

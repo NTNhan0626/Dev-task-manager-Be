@@ -30,4 +30,22 @@ public class DepartmentController {
         ApiResponse<DepartmentResponse> apiResponse = new ApiResponse<>(100,"Add Department Success",departmentResponse);
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }
+    @PutMapping("/update/{departmentId}")
+    public ResponseEntity<ApiResponse<DepartmentResponse>> updateDepartment(
+            @RequestBody DepartmentRequest departmentRequest,
+            @PathVariable Long departmentId
+            ){
+        DepartmentResponse departmentResponse = departmentService.updateDepartment(departmentRequest,departmentId);
+        ApiResponse<DepartmentResponse> apiResponse = new ApiResponse<>(100,"update Department Success",departmentResponse);
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+    }
+    @DeleteMapping("/delete/{departmentId}")
+    public ResponseEntity<ApiResponse<DepartmentResponse>> deleteDepartment(
+            @PathVariable Long departmentId
+    ){
+        DepartmentResponse departmentResponse = departmentService.deleteDepartment(departmentId);
+        ApiResponse<DepartmentResponse> apiResponse = new ApiResponse<>(100,"delete Department Success",departmentResponse);
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+    }
+
 }

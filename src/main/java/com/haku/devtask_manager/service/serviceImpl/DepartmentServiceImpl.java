@@ -1,14 +1,18 @@
 package com.haku.devtask_manager.service.serviceImpl;
 
 import com.haku.devtask_manager.entity.Department;
+import com.haku.devtask_manager.entity.Roles;
 import com.haku.devtask_manager.exception.CustomRuntimeException;
 import com.haku.devtask_manager.exception.ExceptionCode;
 import com.haku.devtask_manager.mapper.DepartmentMapper;
 import com.haku.devtask_manager.payload.entityrequest.DepartmentRequest;
 import com.haku.devtask_manager.payload.entityresponse.DepartmentResponse;
+import com.haku.devtask_manager.payload.entityresponse.ProjectDepartmentDetailResponse;
 import com.haku.devtask_manager.repository.DepartmentDetailRepo;
 import com.haku.devtask_manager.repository.DepartmentRepo;
+import com.haku.devtask_manager.repository.RolesRepo;
 import com.haku.devtask_manager.service.DepartmentService;
+import com.haku.devtask_manager.service.RolesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +26,8 @@ public class DepartmentServiceImpl implements DepartmentService {
     private final DepartmentMapper departmentMapper;
     private final DepartmentRepo departmentRepo;
     private final DepartmentDetailRepo departmentDetailRepo;
+    private final RolesRepo rolesRepo;
+
 
 
     @Override
@@ -37,6 +43,7 @@ public class DepartmentServiceImpl implements DepartmentService {
                         .createdDate(department.getCreatedDate())
                         .status(department.getStatus())
                         .numberStaff(departmentDetailRepo.countByDepartmentAndTimeOutIsNull(department))
+                        .checkDeleted(department.getProjectDepartmentDetails().isEmpty())
                         .build())
                 .collect(Collectors.toList());
     }
@@ -58,16 +65,35 @@ public class DepartmentServiceImpl implements DepartmentService {
         }
 
         departmentRepo.save(department);
+
+
+        if (!rolesRepo.existsByRolesName(department.getDepartmentName())){
+            Roles roles = new Roles();
+            roles.setRolesName(department.getDepartmentName());
+            rolesRepo.save(roles);
+        }
         return departmentMapper.toDepartmentResponse(department);
     }
 
     @Override
     public DepartmentResponse updateDepartment(DepartmentRequest departmentRequest, Long departmentId) {
-        return null;
+        Department department = departmentRepo.findById(departmentId)
+                .orElseThrow(() -> new CustomRuntimeException(ExceptionCode.DEPARTMENT_NOTEXISTS.getCode(),ExceptionCode.DEPARTMENT_NOTEXISTS.getMessage()));
+        Roles roles = rolesRepo.findOneByRolesName(department.getDepartmentName());
+        department.setDepartmentName(departmentRequest.getDepartmentName());
+        departmentRepo.save(department);
+        roles.setRolesName(departmentRequest.getDepartmentName());
+        rolesRepo.save(roles);
+        return departmentMapper.toDepartmentResponse(department);
     }
 
     @Override
     public DepartmentResponse deleteDepartment(Long departmentId) {
-        return null;
+        Department department = departmentRepo.findById(departmentId)
+                .orElseThrow(() -> new CustomRuntimeException(ExceptionCode.DEPARTMENT_NOTEXISTS.getCode(),ExceptionCode.DEPARTMENT_NOTEXISTS.getMessage()));
+        Roles roles = rolesRepo.findOneByRolesName(department.getDepartmentName());
+        departmentRepo.delete(department);
+        rolesRepo.delete(roles);
+        return departmentMapper.toDepartmentResponse(department);
     }
 }

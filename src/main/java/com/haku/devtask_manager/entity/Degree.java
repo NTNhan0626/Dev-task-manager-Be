@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 
 @Entity
-public class Degree {
+public class    Degree {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long degreeId;         // ID của bằng cấp

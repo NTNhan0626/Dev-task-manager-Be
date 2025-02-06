@@ -15,12 +15,15 @@ import com.haku.devtask_manager.repository.TaskRepo;
 import com.haku.devtask_manager.service.TaskDetailService;
 import com.haku.devtask_manager.service.TaskService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
     public class TaskDetailServiceImpl implements TaskDetailService {
@@ -76,5 +79,12 @@ import java.util.stream.Collectors;
                         .status(taskDetail.getStatus())
                         .build())
                 .collect(Collectors.toList());
+    }
+    @Transactional
+    @Override
+    public void deleteTaskDetail(Long taskdetailId) {
+        TaskDetail taskDetail = taskDetailRepo.findById(taskdetailId).orElseThrow();
+        log.info("task detail {}",taskdetailId);
+        taskDetailRepo.delete(taskDetail);
     }
 }

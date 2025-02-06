@@ -8,19 +8,20 @@ import com.haku.devtask_manager.exception.ExceptionCodev2;
 import com.haku.devtask_manager.mapper.AccountMapper;
 import com.haku.devtask_manager.mapper.ProjectMapper;
 import com.haku.devtask_manager.payload.entityrequest.ProjectRequest;
-import com.haku.devtask_manager.payload.entityrequest.TaskRequest;
 import com.haku.devtask_manager.payload.entityresponse.*;
 import com.haku.devtask_manager.repository.*;
 import com.haku.devtask_manager.service.DepartmentDetailService;
 import com.haku.devtask_manager.service.ProjectService;
+import com.haku.devtask_manager.service.TaskService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.management.relation.Role;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProjectServiceImpl implements ProjectService {
@@ -32,6 +33,7 @@ public class ProjectServiceImpl implements ProjectService {
     private final RolesRepo rolesRepo;
     private final RolesDetailRepo rolesDetailRepo;
     private final TaskRepo taskRepo;
+    private final TaskService taskService;
 
     private final ProjectMapper projectMapper;
     private final AccountMapper accountMapper;
@@ -51,7 +53,7 @@ public class ProjectServiceImpl implements ProjectService {
                 () -> new CustomRuntimeException(ExceptionCode.DEPARTMENT_NOTEXISTS.getCode(),ExceptionCode.DEPARTMENT_NOTEXISTS.getMessage())
         ));
         projectDepartmentDetail.setProject(project);
-        projectDepartmentDetail.setStatus(project.getStatus());
+        projectDepartmentDetail.setStatus("inDepartment");
         projectDepartmentDetailRepo.save(projectDepartmentDetail);
         // đồng thời tạo công việc đầu tiên của dự án là công việc cha có tên trùng với tên tự án
         Task task = new Task();
@@ -61,6 +63,8 @@ public class ProjectServiceImpl implements ProjectService {
         task.setProject(project);
         task.setEndDate(project.getEndDate());
         task.setTaskCondition(project.getProjectCondition());
+        task.setStatus("Pending");
+        task.setTaskCondition("Active");
         taskRepo.save(task);
 
         return projectMapper.toProjectResponse(project);
@@ -70,7 +74,13 @@ public class ProjectServiceImpl implements ProjectService {
     public List<ProjectResponse> getAllProject() {
         List<Project> projects =  projectRepo.findAll();
         if(projects.isEmpty()) throw new CustomRuntimeExceptionv2(ExceptionCodev2.PROJECT_NOT_FOUND);
-        return projectMapper.toProjectResponseList(projects);
+        return projects.stream()
+                .map(project -> {
+                    ProjectResponse projectResponse = projectMapper.toProjectResponse(project);
+                    projectResponse.setProjectId(project.getProjectId());
+                    return projectResponse;
+                })
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -115,6 +125,14 @@ public class ProjectServiceImpl implements ProjectService {
                             .userName(projectDetail.getAccount().getUsername())
                             .status(projectDetail.getStatus())
                             .accountId(projectDetail.getAccount().getAccountId())
+                            .taskResponses(projectDetail.getProject().getTaskList().stream()
+                                    .filter(task -> {
+                                        List<Long> accountIds = task.getTaskDetails().stream().map(taskDetail -> taskDetail.getAccount().getAccountId()).toList();
+                                        return (accountIds.contains(projectDetail.getAccount().getAccountId()) && !task.getTaskList().isEmpty());
+                                    })
+                                    .map(task -> TaskResponse.builder()
+                                            .taskName(task.getTaskName())
+                                    .build()).collect(Collectors.toList()))
                             .build() )
                     .collect(Collectors.toList()));
         }
@@ -144,6 +162,7 @@ public class ProjectServiceImpl implements ProjectService {
 
             taskResponse.setParentTaskStatus(task.getParentTask().getStatus());
             taskResponse.setParentTaskEmployeeSize(task.getParentTask().getTaskDetails().size());
+            taskResponse.setParentTaskId(task.getParentTask().getTaskId());
         }
         if(task.getManagerTaskId() != null){
             Account account = accountRepo.findById(task.getManagerTaskId()).orElseThrow();
@@ -225,7 +244,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         return projectMapper.toProjectResponseList(projects);
     }
-    @Transactional
+
     @Override
     public ProjectResponse updateProject(ProjectRequest projectRequest, Long projectId) {
         // Tìm kiếm Project theo ID, nếu không thấy thì ném ngoại lệ
@@ -263,9 +282,15 @@ public class ProjectServiceImpl implements ProjectService {
             });
 
         }
+        ProjectResponse projectResponse = projectMapper.toProjectResponse(project);
+        // khi hủy dự án thì phải xóa tất cả công việc của dự án đó
+        if (projectRequest.getProjectCondition()!=null && projectRequest.getProjectCondition().equals("Canceled") && !project.getTaskList().isEmpty()){
+            Task task = taskRepo.findOneByProject_ProjectIdAndParentTaskIsNull(projectId);
+            projectResponse.setTaskParentId(task.getTaskId());
+        }
 
         // Chuyển đổi Project thành ProjectResponse và trả về
-        return projectMapper.toProjectResponse(project);
+        return projectResponse;
     }
 
     @Transactional

@@ -10,4 +10,5 @@ import java.util.List;
 public interface TaskRepo extends JpaRepository<Task,Long> {
     Task getOneByProject_ProjectIdAndParentTask_TaskIdIsNull(Long projectId);
     List<Task> findAllByProject_ProjectId(Long projectId);
+    Task findOneByProject_ProjectIdAndParentTaskIsNull(Long projectId); // lấy task cha
 }

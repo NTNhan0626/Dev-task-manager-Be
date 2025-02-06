@@ -29,6 +29,7 @@ public class ProjectResponse {
     private double progress;
     private Long projectManagerId;
     private Long createrId;
+    private Long taskParentId; // id của dự án cha trong dự án
 
     List<ProjectDetailResponse> projectDetailResponses; // danh sách nhân viên trong dự án
     List<ProjectDepartmentDetailResponse> projectDepartmentDetailResponses; // danh sách các phòng ban trong dự án
